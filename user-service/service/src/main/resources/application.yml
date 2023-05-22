@@ -1,0 +1,9 @@
+micronaut:
+  application:
+    name: userService
+  server:
+    port: 9090
+netty:
+  default:
+    allocator:
+      max-order: 3

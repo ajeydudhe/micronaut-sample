@@ -1,0 +1,5 @@
+micronaut:
+  http:
+    services:
+      user-service:
+        url: 'http://localhost:9090'

@@ -1,0 +1,9 @@
+micronaut:
+  application:
+    name: helloService
+  server:
+    port: 8080    
+netty:
+  default:
+    allocator:
+      max-order: 3
