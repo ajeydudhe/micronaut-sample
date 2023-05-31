@@ -67,3 +67,23 @@ For the top most module, the parent is defined as **_micronaut-parent_** which h
 </parent>
 ```
 It was observed that using latest version for any of the dependencies does not work. For example, if latest version of logback is used then logging stops working.
+## AOT Code Generator
+Tried to implement **_AOTCodeGenerator_** using following steps mentioned in **[Micronaut AOT](https://micronaut-projects.github.io/micronaut-aot/latest/guide/)**.
+* Defined custom class **_org.expedientframework.user.MyResourceGenerator_** implementing the **_AOTCodeGenerator_** interface with ID as **_my.resource.generator_**.
+* Added **_aot.properties_** at the root of the Maven module which has property to enable the code generator as below:
+```properties
+my.resource.generator.enabled = true
+greeter.message = Hello, world!
+```
+However, the code generator class was not getting invoked when maven plugin was run using following command:
+
+```shell
+mvn package -Dmicronaut.aot.enabled=true -Dmicronaut.aot.packageName=com.ajeydudhe
+```
+After looking into Micronaut sources and some trial & error, figured out that we need to add the code generator class as service entry under **_META-INF/services/io.micronaut.aot.core.AOTCodeGenerator_**.
+<br/>
+For example, added file **_user-service/service/src/main/resources/META-INF/services/io.micronaut.aot.core.AOTCodeGenerator_** with below fully-qualified class name for the custom code generator:
+```yaml
+org.expedientframework.user.MyResourceGenerator
+```
+With above, the custom code generator was getting invoked during compilation.
