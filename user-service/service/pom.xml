@@ -25,6 +25,12 @@
 
         <!-- 3rd party dependencies -->
         <dependency>
+            <groupId>io.micronaut.aot</groupId>
+            <artifactId>micronaut-aot-core</artifactId>
+            <version>2.0.0-M2</version>
+        </dependency>
+        
+        <dependency>
             <groupId>io.micronaut</groupId>
             <artifactId>micronaut-http-client</artifactId>
         </dependency>
@@ -80,6 +86,13 @@
             <plugin>
                 <groupId>io.micronaut.build</groupId>
                 <artifactId>micronaut-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>io.micronaut</groupId>
+                        <artifactId>micronaut-inject</artifactId>
+                        <version>${micronaut.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

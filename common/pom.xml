@@ -18,6 +18,7 @@
     <properties>
         <jdk.version>17</jdk.version>
         <release.version>17</release.version>
+        <version.micronaut-aot>2.0.0-M2</version.micronaut-aot>
     </properties>
 
     <dependencyManagement>

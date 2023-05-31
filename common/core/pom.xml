@@ -17,5 +17,11 @@
             <groupId>io.micronaut</groupId>
             <artifactId>micronaut-inject</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>io.micronaut.aot</groupId>
+            <artifactId>micronaut-aot-core</artifactId>
+            <version>${version.micronaut-aot}</version>
+        </dependency>
     </dependencies>
 </project>

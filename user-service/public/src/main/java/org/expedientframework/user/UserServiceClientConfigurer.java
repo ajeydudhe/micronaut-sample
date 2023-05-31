@@ -3,6 +3,7 @@ package org.expedientframework.user;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.ApplicationContextConfigurer;
 import io.micronaut.context.annotation.ContextConfigurer;
+import io.micronaut.core.annotation.Introspected;
 import org.expedientframework.common.ServiceClientConfigurer;
 
 // We cannot have a base class implementing ApplicationContextConfigurer and then extend that.
