@@ -13,9 +13,15 @@
     <name>Common - Core</name>
     
     <dependencies>
+        <!-- 3rd party dependencies -->
         <dependency>
             <groupId>io.micronaut</groupId>
             <artifactId>micronaut-inject</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>io.micronaut.aot</groupId>
+            <artifactId>micronaut-aot-core</artifactId>
         </dependency>
     </dependencies>
 </project>

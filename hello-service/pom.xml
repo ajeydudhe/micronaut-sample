@@ -78,7 +78,7 @@
                         </path>
                     </annotationProcessorPaths>
                     <compilerArgs>
-                        <arg>-Amicronaut.processing.group=org.expedientframework</arg>
+                        <arg>-Amicronaut.processing.group=${project.groupId}</arg>
                         <arg>-Amicronaut.processing.module=${project.artifactId}</arg>
                     </compilerArgs>
                 </configuration>
@@ -87,7 +87,7 @@
     </build>
 
     <modules>
-        <module>service</module>
         <module>public</module>
+        <module>service</module>
     </modules>
 </project>
