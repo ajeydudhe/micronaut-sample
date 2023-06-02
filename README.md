@@ -56,6 +56,70 @@ public class UserServiceClientConfigurer implements ApplicationContextConfigurer
 }
 ```
 That's it. When consumer service starts then above class is auto-detected and its **_configure()_** method is called.
+
+# Micronaut AOT POC
+Generated the above-mentioned http service client configurer using AOT as described in **[Micronaut AOT](https://micronaut-projects.github.io/micronaut-aot/latest/guide/)**.
+## Code generator class
+Created **_[ServiceClientConfigurerSourceGenerator](common/core/src/main/java/org/expedientframework/common/ServiceClientConfigurerSourceGenerator.java)_** class implementing the **_io.micronaut.aot.core.AOTCodeGenerator_** interface.
+* The ID for the code generator used is **_service.client.configurer.source.generator_**
+* It expects comma-separated list of service client fully-qualified class names as **_service.client.classes_** property value.
+* It generates a class implementing the **_[ApplicationContextConfigurer](https://docs.micronaut.io/3.2.1/api/io/micronaut/context/ApplicationContextConfigurer.html)_** interface which loads the required properties.
+* Added **_org.expedientframework.common.ServiceClientConfigurerSourceGenerator_** as a service entry in [io.micronaut.aot.core.AOTCodeGenerator](common/core/src/main/resources/META-INF/services/io.micronaut.aot.core.AOTCodeGenerator). <span style="color:red">**_This step is not documented and without this the code generator will not be executed._**</span>
+* Added **_[micronaut-aot-core](common/core/pom.xml#L22)_** Maven dependency. Without this dependency the build will fail with following error:
+```text
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:compile (default-compile) on project core: Fatal error compiling: java.lang.IllegalArgumentException: The argument does not represent an annotation type: AOTModule -> [Help 1]
+```
+
+## Configuring the micronaut-maven-plugin
+### pom.xml
+Added following plugin configuration to **_[pom.xml](hello-service/service/pom.xml#L84)_**
+```xml
+<plugin>
+    <groupId>io.micronaut.build</groupId>
+    <artifactId>micronaut-maven-plugin</artifactId>
+    <executions>
+        <execution>
+            <id>generate-service-client-sources</id>
+            <goals>
+                <goal>aot-analysis</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+                <enabled>true</enabled>
+                <packageName>org.expedientframework.hello.aot</packageName>
+            </configuration>
+        </execution>
+    </executions>
+    <dependencies>
+        <dependency>
+            <groupId>org.expedientframework.hello</groupId>
+            <artifactId>public</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</plugin>
+```
+* **_goal:_** Used the **_aot-analysis_** goal of the plugin.
+* **_phase:_** The default phase is **_package_** but used **_generate-sources_** since the generated class is needed for the tests to run successfully.
+* **_configuration:_**
+  * **_enabled:_** Enabled AOT analysis by setting this to **_true_**. With this setting the AOT code generator will be executed as part of Maven build itself.
+  * **_packageName:_** Package name is required and the generated class will be put into this package.
+* **_dependencies:_** Had to add dependency for the service client module since it is referenced in the generated source file.
+
+### aot.properties
+Added **_[aot.properties](hello-service/service/aot.properties)_** file at the root of the Maven module with following properties:
+```properties
+# Enable the code generator
+service.client.configurer.source.generator.enabled = true
+# Comma separated list of http service client class fully-qualified names
+service.client.classes = org.expedientframework.hello.HelloServiceClient, org.expedientframework.user.UserServiceClient
+```
+### Output
+* The generated files are under **_target/aot_** and are copied accordingly under **_target/classes_**.
+* If you want to view the generated Java files then they are under **_target/aot/jit/generated/sources_**.
+
+With above changes and configurations, was able to generate and consume service client configurer classes during the build.
+
 # Observations
 ## Maven dependencies
 For the top most module, the parent is defined as **_micronaut-parent_** which has all the required dependencies declared with required versions. 

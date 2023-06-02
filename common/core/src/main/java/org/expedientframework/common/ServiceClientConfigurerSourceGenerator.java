@@ -29,7 +29,8 @@ public class ServiceClientConfigurerSourceGenerator extends AbstractCodeGenerato
     @Override
     public void generate(@NonNull AOTContext context) {
         final String serviceClientClasses = context.getConfiguration().mandatoryValue("service.client.classes");
-        for (String serviceClientClassFQN : serviceClientClasses.split(",")) {
+        for (String serviceClientClass : serviceClientClasses.split(",")) {
+            final String serviceClientClassFQN = serviceClientClass.trim();
             log.info("Generating service client configurer class for {}", serviceClientClassFQN);
             
             final String targetClassSimpleName = getTargetClassSimpleName(serviceClientClassFQN);
@@ -43,7 +44,7 @@ public class ServiceClientConfigurerSourceGenerator extends AbstractCodeGenerato
             
             final JavaFile javaFile = context.javaFile(typeSpec);
             
-            // Register the service
+            // Register the service. This creates / updates META-INF/services/io.micronaut.context.ApplicationContextConfigurer with the generated class name.
             context.registerServiceImplementation(ApplicationContextConfigurer.class, targetClassSimpleName);
             context.registerGeneratedSourceFile(javaFile);
             
